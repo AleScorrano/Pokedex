@@ -23,6 +23,9 @@ class FetchingMoreDataState extends PokemonState {}
 
 class RefreshingPokemonsState extends PokemonState {}
 
-class ErrorPokemonState extends PokemonState {}
+class ErrorPokemonState extends PokemonState {
+  final String? message;
+  const ErrorPokemonState({this.message});
+}
 
 class NoMorePokemonsState extends PokemonState {}

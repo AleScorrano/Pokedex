@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:pokedex/dto/pokemon_dto.dart';
+import 'package:pokedex/errors/connection_state_error.dart';
 import 'package:pokedex/errors/repository_error.dart';
 import 'package:pokedex/exception/no_more_pokemon_exception.dart';
 import 'package:pokedex/mappers/pokemon_mapper.dart';
@@ -27,14 +29,23 @@ class PokemonRepository {
 //****************************************************************************
 //****************************************************************************
 
-  Future<List<Pokemon>> initializeData() async {
-    final List<Pokemon> pokemonsInCache = databaseService.allPokemons();
-    lastOffset = pokemonsInCache.length;
-
-    if (pokemonsInCache.isEmpty) {
-      return await getDataFromApi();
-    } else {
-      return pokemonsInCache;
+  Future<List<Pokemon>> initializeData(
+      {required ConnectivityResult connectionState}) async {
+    try {
+      final List<Pokemon> pokemonsInCache = databaseService.allPokemons();
+      lastOffset = pokemonsInCache.length;
+      if (pokemonsInCache.isEmpty) {
+        if (connectionState == ConnectivityResult.none) {
+          throw ConnectionStateError();
+        }
+        return await getDataFromApi();
+      } else {
+        return pokemonsInCache;
+      }
+    } on ConnectionStateError {
+      rethrow;
+    } catch (error) {
+      throw RepositoryError(error.toString());
     }
   }
 

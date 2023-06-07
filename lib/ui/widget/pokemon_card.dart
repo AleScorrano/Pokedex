@@ -27,71 +27,79 @@ class _PokemonCardState extends State<PokemonCard> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        shape: BoxShape.rectangle,
-        border: Border.all(color: _pokemonColor, width: 1.5),
-        borderRadius: BorderRadius.circular(16),
-      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _pokemonImage(),
           Padding(
-            padding: const EdgeInsets.only(top: 8.0, left: 10),
+            padding: const EdgeInsets.only(top: 8.0, left: 14, bottom: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _pokemonName(),
                 _pokemonID(),
+                _types(),
               ],
             ),
           ),
           const Spacer(),
-          _types(),
-          const SizedBox(width: 10),
           _favouriteButton(),
         ],
       ),
     );
   }
 
-  Widget _pokemonImage() => Stack(
-        children: [
-          Image.asset("assets/images/pokeball.png",
-              fit: BoxFit.cover,
-              width: 80,
-              height: 80,
-              color: _pokemonColor.withOpacity(0.2)),
-          widget.pokemon.image != null
-              ? Image.memory(
-                  widget.pokemon.image!,
-                  width: 80,
-                  height: 80,
-                )
-              : const SizedBox()
-        ],
+  Widget _pokemonImage() => Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
+            colors: [
+              _pokemonColor.withOpacity(0.2),
+              Colors.transparent,
+            ],
+          ),
+        ),
+        child: Stack(
+          children: [
+            TypeIcon(
+              type: widget.pokemon.types.first,
+              size: 82,
+              opacity: 0.3,
+            ),
+            widget.pokemon.image != null
+                ? Image.memory(
+                    widget.pokemon.image!,
+                    width: 100,
+                    height: 100,
+                  )
+                : const SizedBox()
+          ],
+        ),
       );
 
   Widget _pokemonID() => Text(
         widget.pokemon.id.toString().pokemonIdFormatter(),
         style: Theme.of(context).textTheme.labelLarge!.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
+            fontWeight: FontWeight.w500, color: Theme.of(context).hintColor),
       );
 
-  Widget _favouriteButton() => IconButton(
-        onPressed: () {},
-        icon: Icon(
-          CupertinoIcons.star,
-          color: Colors.amber.shade700,
+  Widget _favouriteButton() => Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: IconButton(
+          onPressed: () {},
+          icon: Icon(
+            CupertinoIcons.star,
+            color: Colors.amber.shade700,
+          ),
         ),
       );
 
   Widget _pokemonName() => Text(
         widget.pokemon.name.capitalize(),
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              fontSize: 18,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
       );

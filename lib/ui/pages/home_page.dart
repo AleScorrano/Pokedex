@@ -1,10 +1,12 @@
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex/blocs/pokemon/bloc/pokemon_bloc.dart';
 import 'package:pokedex/models/pokemon.dart';
+import 'package:pokedex/ui/widget/connection_banner.dart';
+import 'package:pokedex/ui/widget/error_widget.dart';
+import 'package:pokedex/ui/widget/loading_indicator.dart';
 import 'package:pokedex/ui/widget/pokemon_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,6 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late double appBarHeight;
   final ScrollController _pokemonslistController = ScrollController();
   bool isLoading = false;
   @override
@@ -50,41 +53,61 @@ class _HomePageState extends State<HomePage> {
         },
         builder: (context, state) {
           if (state is FetchingDataState) {
-            return _loadingWidget();
+            return const Center(
+              child:
+                  LoadingIndicator(message: "Download Pokemons...", size: 300),
+            );
           } else if (state is PokemonFetchedState) {
-            return _pokemonsList(state.pokemons);
+            return _pokemonsfetchedBody(state.pokemons);
+          } else if (state is ErrorPokemonState) {
+            return MyErrorWidget(message: state.message ?? "General error");
           } else {
             return const SizedBox();
           }
         },
       );
 
-  Widget _pokemonsList(List<Pokemon> pokemons) =>
+  Widget _pokemonsfetchedBody(List<Pokemon> pokemons) =>
       BlocConsumer<PokemonBloc, PokemonState>(
         listener: (context, state) {
-          _updateLoadingInfo(state);
+          _loadingToggle(state);
         },
         builder: (context, state) {
-          return CustomScrollView(
-            controller: _pokemonslistController,
-            slivers: [
-              _appBar(),
-              SliverList.builder(
-                itemCount: pokemons.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == pokemons.length) {
-                    return state is FetchingMoreDataState
-                        ? _loadingWidget()
-                        : const SizedBox();
-                  } else if (index == 0) {
-                    return state is RefreshingPokemonsState
-                        ? _loadingWidget()
-                        : const SizedBox();
-                  }
-                  return PokemonCard(pokemon: pokemons[index]);
-                },
-              )
-            ],
+          return RefreshIndicator(
+            color: Colors.transparent,
+            onRefresh: () async => _refreshPokemons(),
+            child: Stack(
+              children: [
+                CustomScrollView(
+                  controller: _pokemonslistController,
+                  slivers: [
+                    _appBar(),
+                    SliverList.separated(
+                      itemCount: pokemons.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == pokemons.length) {
+                          return state is FetchingMoreDataState
+                              ? const LoadingIndicator()
+                              : const SizedBox();
+                        } else if (index == 0) {
+                          return state is RefreshingPokemonsState
+                              ? const LoadingIndicator(
+                                  message: "Updating all pokemons...")
+                              : const SizedBox();
+                        }
+                        return PokemonCard(pokemon: pokemons[index - 1]);
+                      },
+                      separatorBuilder: (context, index) => index == 0
+                          ? const SizedBox(
+                              height: 28,
+                            )
+                          : _divider(),
+                    ),
+                  ],
+                ),
+                const ConnectionBanner(),
+              ],
+            ),
           );
         },
       );
@@ -130,23 +153,10 @@ class _HomePageState extends State<HomePage> {
             child: _textField()),
       );
 
-  Widget _loadingWidget() => Column(
-        children: [
-          Center(
-            child: Image.asset(
-              "assets/images/loading-pokeball.gif",
-              color: Colors.grey.shade400,
-              width: 100,
-              height: 100,
-            ),
-          ),
-          const SizedBox(height: 20),
-        ],
-      );
-
-  Widget _divider(BuildContext context) => const Divider(
-        height: 1,
-        color: Colors.transparent,
+  Widget _divider() => Divider(
+        indent: 100,
+        endIndent: 10,
+        color: Colors.grey.shade300,
       );
 
   Widget _textField() => Container(
@@ -170,7 +180,7 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-  void _updateLoadingInfo(PokemonState state) {
+  void _loadingToggle(PokemonState state) {
     if (state is FetchingMoreDataState) {
       setState(() {
         isLoading = true;
@@ -183,4 +193,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _fetchMorePokemons() => BlocProvider.of<PokemonBloc>(context).moreData();
+
+  void _refreshPokemons() =>
+      BlocProvider.of<PokemonBloc>(context).refreshData();
 }

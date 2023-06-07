@@ -1,0 +1,1 @@
+class ConnectionStateError extends Error {}
