@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:pokedex/dto/pokemon_dto.dart';
 import 'package:pokedex/errors/repository_error.dart';
+import 'package:pokedex/exception/no_more_pokemon_exception.dart';
 import 'package:pokedex/mappers/pokemon_mapper.dart';
 import 'package:pokedex/models/pokemon.dart';
 import 'package:pokedex/models/pokemon_response.dart';
@@ -42,6 +43,9 @@ class PokemonRepository {
 
   Future<List<Pokemon>> getDataFromApi() async {
     try {
+      if (lastOffset >= 1280) {
+        throw NoMorePokemonsException();
+      }
       final pokemonsList =
           await _getPokemonList(limit: requestLimit, offset: lastOffset);
       await _addPokemonsToCache(pokemonsList);

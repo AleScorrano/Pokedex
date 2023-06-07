@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:pokedex/exception/no_more_pokemon_exception.dart';
 import 'package:pokedex/models/pokemon.dart';
 import 'package:pokedex/repositories/pokemon_repository.dart';
 
@@ -39,10 +40,15 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
   FutureOr<void> _getMoreData(
       FetchMorePokemonEvent event, Emitter<PokemonState> emit) async {
     try {
+      if (state is FetchingMoreDataState) {
+        return;
+      }
       emit(FetchingMoreDataState());
       final pokemonsResult = await pokemonRepository.getDataFromApi();
       pokemons.addAll(pokemonsResult);
       emit(PokemonFetchedState(pokemons: pokemons));
+    } on (NoMorePokemonsException,) {
+      emit(NoMorePokemonsState());
     } catch (error) {
       emit(ErrorPokemonState());
     }
@@ -54,7 +60,7 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
   FutureOr<void> _refreshData(
       RefreshDataEvent event, Emitter<PokemonState> emit) async {
     try {
-      emit(RefreshPokemonsState());
+      emit(RefreshingPokemonsState());
       final pokemonResults = await pokemonRepository.refreshData();
       pokemons.clear();
       pokemons.addAll(pokemonResults);
@@ -70,4 +76,6 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
   void fetchInitialData() => add(FetchInitialDataEvent());
   void moreData() => add(FetchMorePokemonEvent());
   void refreshData() => add(RefreshDataEvent());
+
+  void deleteAll() => pokemonRepository.cleanCache();
 }

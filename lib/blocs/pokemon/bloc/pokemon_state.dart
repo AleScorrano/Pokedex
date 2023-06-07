@@ -14,10 +14,15 @@ class FetchingDataState extends PokemonState {}
 class PokemonFetchedState extends PokemonState {
   final List<Pokemon> pokemons;
   const PokemonFetchedState({required this.pokemons});
+
+  @override
+  List<Object> get props => [pokemons];
 }
 
 class FetchingMoreDataState extends PokemonState {}
 
+class RefreshingPokemonsState extends PokemonState {}
+
 class ErrorPokemonState extends PokemonState {}
 
-class RefreshPokemonsState extends PokemonState {}
+class NoMorePokemonsState extends PokemonState {}

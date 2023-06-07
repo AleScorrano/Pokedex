@@ -1,0 +1,1 @@
+class NoMorePokemonsException implements Exception {}
