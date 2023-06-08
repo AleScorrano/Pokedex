@@ -25,6 +25,8 @@ abstract class _$PokemonCWProxy {
 
   Pokemon types(List<String> types);
 
+  Pokemon ability(String? ability);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Pokemon(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -41,6 +43,7 @@ abstract class _$PokemonCWProxy {
     Uint8List? image,
     bool? isFavourite,
     List<String>? types,
+    String? ability,
   });
 }
 
@@ -78,6 +81,9 @@ class _$PokemonCWProxyImpl implements _$PokemonCWProxy {
   Pokemon types(List<String> types) => this(types: types);
 
   @override
+  Pokemon ability(String? ability) => this(ability: ability);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Pokemon(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -95,6 +101,7 @@ class _$PokemonCWProxyImpl implements _$PokemonCWProxy {
     Object? image = const $CopyWithPlaceholder(),
     Object? isFavourite = const $CopyWithPlaceholder(),
     Object? types = const $CopyWithPlaceholder(),
+    Object? ability = const $CopyWithPlaceholder(),
   }) {
     return Pokemon(
       id: id == const $CopyWithPlaceholder() || id == null
@@ -133,6 +140,10 @@ class _$PokemonCWProxyImpl implements _$PokemonCWProxy {
           ? _value.types
           // ignore: cast_nullable_to_non_nullable
           : types as List<String>,
+      ability: ability == const $CopyWithPlaceholder()
+          ? _value.ability
+          // ignore: cast_nullable_to_non_nullable
+          : ability as String?,
     );
   }
 }
@@ -167,13 +178,14 @@ class PokemonAdapter extends TypeAdapter<Pokemon> {
       image: fields[9] as Uint8List?,
       isFavourite: fields[8] as bool?,
       types: (fields[6] as List).cast<String>(),
+      ability: fields[10] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Pokemon obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -193,7 +205,9 @@ class PokemonAdapter extends TypeAdapter<Pokemon> {
       ..writeByte(8)
       ..write(obj.isFavourite)
       ..writeByte(9)
-      ..write(obj.image);
+      ..write(obj.image)
+      ..writeByte(10)
+      ..write(obj.ability);
   }
 
   @override

@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pokedex/extensions/capitalize.dart';
 import 'package:pokedex/extensions/pokemon_id_formatter.dart';
 import 'package:pokedex/models/pokemon.dart';
+import 'package:pokedex/ui/pages/pokemon_details_sheet.dart';
 import 'package:pokedex/ui/widget/type_icon_widget.dart';
 import 'package:pokedex/utils/map_card_color.dart';
 
@@ -25,26 +27,29 @@ class _PokemonCardState extends State<PokemonCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _pokemonImage(),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, left: 14, bottom: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _pokemonName(),
-                _pokemonID(),
-                _types(),
-              ],
+    return InkWell(
+      onTap: () => _openDetailSheet(),
+      child: Container(
+        margin: const EdgeInsets.all(4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _pokemonImage(),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, left: 14, bottom: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _pokemonName(),
+                  _pokemonID(),
+                  _types(),
+                ],
+              ),
             ),
-          ),
-          const Spacer(),
-          _favouriteButton(),
-        ],
+            const Spacer(),
+            _favouriteButton(),
+          ],
+        ),
       ),
     );
   }
@@ -65,7 +70,7 @@ class _PokemonCardState extends State<PokemonCard> {
           children: [
             TypeIcon(
               type: widget.pokemon.types.first,
-              size: 82,
+              size: 80,
               opacity: 0.3,
             ),
             widget.pokemon.image != null
@@ -110,4 +115,8 @@ class _PokemonCardState extends State<PokemonCard> {
           (index) => TypeIcon(type: widget.pokemon.types[index]),
         ),
       );
+
+  _openDetailSheet() => showCupertinoModalBottomSheet(
+      context: context,
+      builder: (context) => PokemonDetailsSheet(pokemon: widget.pokemon));
 }

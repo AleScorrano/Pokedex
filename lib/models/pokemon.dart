@@ -30,6 +30,8 @@ class Pokemon extends Equatable {
   final bool? isFavourite;
   @HiveField(9)
   final Uint8List? image;
+  @HiveField(10)
+  final String? ability;
 
   const Pokemon(
       {required this.id,
@@ -40,7 +42,8 @@ class Pokemon extends Equatable {
       required this.abilities,
       required this.image,
       required this.isFavourite,
-      required this.types})
+      required this.types,
+      required this.ability})
       : imageURL =
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png";
 

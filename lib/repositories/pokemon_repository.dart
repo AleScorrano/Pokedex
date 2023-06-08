@@ -112,7 +112,11 @@ class PokemonRepository {
     PokemonDTO pokemonDTO = await networkService.getPokemon(url: url);
     Pokemon pokemon = pokemonMapper.toModel(pokemonDTO);
     Uint8List? image = await networkService.getPokemonImage(pokemon.imageURL);
-    return pokemon.copyWith(image: image);
+    String? ability = await networkService.getPokemonAbility(pokemon.id);
+    return pokemon.copyWith(
+      image: image,
+      ability: ability,
+    );
   }
 
 //****************************************************************************

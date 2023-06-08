@@ -9,7 +9,7 @@ import 'package:pokedex/models/pokemon_response.dart';
 class NetworkService {
   static String baseURL = "pokeapi.co";
   static String basePath = "api/v2/pokemon";
-  static String colorPath = "api/v2/pokemon-color/";
+  static String abilityPath = "api/v2/ability";
 
 //****************************************************************************
 //****************************************************************************
@@ -65,5 +65,24 @@ class NetworkService {
 
     final imageData = response.bodyBytes;
     return imageData;
+  }
+
+  //****************************************************************************
+//****************************************************************************
+
+  Future<String?> getPokemonAbility(int id) async {
+    final url = Uri.https(
+      baseURL,
+      "$abilityPath/${id.toString()}/",
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode < 200 || response.statusCode > 299) {
+      return null;
+    }
+    final decodedResponse = json.decode(response.body);
+
+    return (decodedResponse["effect_entries"] as List<dynamic>)[1]["effect"];
   }
 }

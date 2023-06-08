@@ -6,11 +6,13 @@ class TypeIcon extends StatelessWidget {
   final String type;
   final double? size;
   final double? opacity;
+  final bool? extended;
   const TypeIcon({
     super.key,
     required this.type,
     this.size,
     this.opacity,
+    this.extended,
   });
 
   @override
