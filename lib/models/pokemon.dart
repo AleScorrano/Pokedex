@@ -27,7 +27,7 @@ class Pokemon extends Equatable {
   @HiveField(7)
   final String imageURL;
   @HiveField(8)
-  final bool? isFavourite;
+  final bool isFavourite;
   @HiveField(9)
   final Uint8List? image;
   @HiveField(10)
@@ -40,8 +40,8 @@ class Pokemon extends Equatable {
       required this.weight,
       required this.stats,
       required this.abilities,
-      required this.image,
       required this.isFavourite,
+      required this.image,
       required this.types,
       required this.ability})
       : imageURL =
@@ -56,5 +56,9 @@ class Pokemon extends Equatable {
         stats,
         abilities,
         types,
+        isFavourite,
       ];
+  Pokemon toggleFavourite() {
+    return copyWith(isFavourite: !isFavourite);
+  }
 }

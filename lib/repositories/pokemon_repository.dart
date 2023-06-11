@@ -71,20 +71,25 @@ class PokemonRepository {
 //****************************************************************************
 
   Future<List<Pokemon>> refreshData() async {
-    List<Pokemon> pokemonsList = [];
+    List<Pokemon> refreshedList = [];
     try {
+      List<Pokemon> initialList = databaseService.allPokemons();
       int startOffset = 0;
       while (startOffset < lastOffset) {
         await Future.delayed(const Duration(seconds: 1));
         List<Pokemon> pokemonsRequest =
             await _getPokemonList(limit: requestLimit, offset: startOffset);
-        pokemonsList.addAll(pokemonsRequest);
+        refreshedList.addAll(pokemonsRequest);
         startOffset = startOffset + requestLimit;
       }
+
+      _keepInfavourites(
+          originalList: initialList, refreshedList: refreshedList);
+
       await cleanCache();
-      await _addPokemonsToCache(pokemonsList);
+      await _addPokemonsToCache(refreshedList);
       lastOffset = databaseService.getLastDbIndex();
-      return pokemonsList;
+      return refreshedList;
     } catch (error) {
       throw RepositoryError(error.toString());
     }
@@ -124,6 +129,25 @@ class PokemonRepository {
   Future<void> _addPokemonsToCache(List<Pokemon> pokemons) async =>
       await Future.wait(pokemons
           .map((pokemon) async => await databaseService.addPokemon(pokemon)));
+
+//****************************************************************************
+//****************************************************************************
+
+  Future<void> toggleFavourite(Pokemon pokemon) async =>
+      databaseService.addPokemon(pokemon);
+
+//****************************************************************************
+//****************************************************************************
+
+  void _keepInfavourites(
+      {required List<Pokemon> originalList,
+      required List<Pokemon> refreshedList}) {
+    for (var pokemon in refreshedList) {
+      if (originalList.elementAt(pokemon.id - 1).isFavourite) {
+        refreshedList[pokemon.id - 1] = pokemon.copyWith(isFavourite: true);
+      }
+    }
+  }
 
 //****************************************************************************
 //****************************************************************************

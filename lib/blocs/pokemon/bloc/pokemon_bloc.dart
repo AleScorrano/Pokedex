@@ -23,6 +23,8 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
     on<FetchInitialDataEvent>(_fetchInitialData);
     on<FetchMorePokemonEvent>(_getMoreData);
     on<RefreshDataEvent>(_refreshData);
+    on<ToggleFavoriteEvent>(_toggleFavorite);
+
     connectivitySubscription =
         Connectivity().onConnectivityChanged.listen((currentConnectionState) {
       connectionState = currentConnectionState;
@@ -91,9 +93,30 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
 //****************************************************************************
 //****************************************************************************
 
+  FutureOr<void> _toggleFavorite(
+      ToggleFavoriteEvent event, Emitter<PokemonState> emit) async {
+    final updatedPokemons = List<Pokemon>.from(pokemons);
+
+    final index =
+        updatedPokemons.indexWhere((item) => item.id == event.pokemon.id);
+    if (index != -1) {
+      final pokemonToToggle = updatedPokemons[index];
+      final updatedPokemon = pokemonToToggle.toggleFavourite();
+      updatedPokemons[index] = updatedPokemon;
+      await pokemonRepository.toggleFavourite(updatedPokemon);
+      pokemons = updatedPokemons;
+    }
+    emit(PokemonFetchedState(pokemons: pokemons));
+  }
+
+//****************************************************************************
+//****************************************************************************
+
   void fetchInitialData() => add(FetchInitialDataEvent());
   void moreData() => add(FetchMorePokemonEvent());
   void refreshData() => add(RefreshDataEvent());
+  void toggleFavourite(Pokemon pokemon) =>
+      add(ToggleFavoriteEvent(pokemon: pokemon));
 
   void deleteAll() => pokemonRepository.cleanCache();
 }

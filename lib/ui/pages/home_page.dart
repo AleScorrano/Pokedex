@@ -19,12 +19,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late double appBarHeight;
   final ScrollController _pokemonslistController = ScrollController();
-  bool isLoading = false;
+  final TextEditingController _searchController = TextEditingController();
+  List<Pokemon> _pokemons = [];
+  bool _isLoading = false;
+  bool _isSearching = false;
   @override
   void initState() {
     _pokemonslistController.addListener(
       () {
-        if (!isLoading &&
+        if (!_isLoading &&
+            !_isSearching &&
             _pokemonslistController.position.maxScrollExtent ==
                 _pokemonslistController.offset) {
           _fetchMorePokemons();
@@ -33,6 +37,17 @@ class _HomePageState extends State<HomePage> {
         }
       },
     );
+
+    _searchController.addListener(() {
+      setState(() {
+        if (_searchController.text.isEmpty) {
+          _isSearching = false;
+        } else {
+          _isSearching = true;
+        }
+      });
+    });
+
     super.initState();
   }
 
@@ -58,6 +73,7 @@ class _HomePageState extends State<HomePage> {
                   LoadingIndicator(message: "Download Pokemons...", size: 300),
             );
           } else if (state is PokemonFetchedState) {
+            _pokemons = state.pokemons;
             return _pokemonsfetchedBody(state.pokemons);
           } else if (state is ErrorPokemonState) {
             return MyErrorWidget(message: state.message ?? "General error");
@@ -82,27 +98,7 @@ class _HomePageState extends State<HomePage> {
                   controller: _pokemonslistController,
                   slivers: [
                     _appBar(),
-                    SliverList.separated(
-                      itemCount: pokemons.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index == pokemons.length) {
-                          return state is FetchingMoreDataState
-                              ? const LoadingIndicator()
-                              : const SizedBox();
-                        } else if (index == 0) {
-                          return state is RefreshingPokemonsState
-                              ? const LoadingIndicator(
-                                  message: "Updating all pokemons...")
-                              : const SizedBox();
-                        }
-                        return PokemonCard(pokemon: pokemons[index - 1]);
-                      },
-                      separatorBuilder: (context, index) => index == 0
-                          ? const SizedBox(
-                              height: 28,
-                            )
-                          : _divider(),
-                    ),
+                    _pokemonList(_searchResults(), state),
                   ],
                 ),
                 const ConnectionBanner(),
@@ -111,6 +107,31 @@ class _HomePageState extends State<HomePage> {
           );
         },
       );
+
+  Widget _pokemonList(List<Pokemon> pokemons, PokemonState state) => pokemons
+          .isEmpty
+      ? const SliverToBoxAdapter(child: Center(child: Text("No Pokemons")))
+      : SliverList.separated(
+          itemCount: _isSearching ? pokemons.length : pokemons.length + 1,
+          itemBuilder: (context, index) {
+            if (index == pokemons.length && !_isSearching) {
+              return state is FetchingMoreDataState
+                  ? const LoadingIndicator()
+                  : const SizedBox();
+            } else if (index == 0 && !_isSearching) {
+              return state is RefreshingPokemonsState
+                  ? const LoadingIndicator(message: "Updating all pokemons...")
+                  : const SizedBox();
+            }
+            return PokemonCard(
+                pokemon: pokemons[!_isSearching ? index - 1 : index]);
+          },
+          separatorBuilder: (context, index) => index == 0
+              ? const SizedBox(
+                  height: 28,
+                )
+              : _divider(),
+        );
 
   Widget _appBar() => SliverAppBar(
         backgroundColor: Colors.transparent,
@@ -168,9 +189,10 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(16),
         ),
         child: TextField(
+          controller: _searchController,
           decoration: InputDecoration(
             prefixIcon: const Icon(CupertinoIcons.search),
-            hintText: "Cerca per nome o numero...",
+            hintText: "Search for name or id...",
             hintStyle: Theme.of(context)
                 .textTheme
                 .labelLarge!
@@ -183,13 +205,22 @@ class _HomePageState extends State<HomePage> {
   void _loadingToggle(PokemonState state) {
     if (state is FetchingMoreDataState) {
       setState(() {
-        isLoading = true;
+        _isLoading = true;
       });
     } else if (state is PokemonFetchedState) {
       setState(() {
-        isLoading = false;
+        _isLoading = false;
       });
     }
+  }
+
+  List<Pokemon> _searchResults() {
+    final searchQuery = _searchController.text.trim();
+    return _pokemons.where((pokemon) {
+      final pokemonName = pokemon.name.toLowerCase();
+      final pokemonId = pokemon.id.toString();
+      return pokemonName.contains(searchQuery) || pokemonId == searchQuery;
+    }).toList(growable: false);
   }
 
   void _fetchMorePokemons() => BlocProvider.of<PokemonBloc>(context).moreData();

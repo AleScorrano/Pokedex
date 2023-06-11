@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pokedex/extensions/capitalize.dart';
 import 'package:pokedex/extensions/pokemon_id_formatter.dart';
 import 'package:pokedex/models/pokemon.dart';
 import 'package:pokedex/ui/pages/pokemon_details_sheet.dart';
+import 'package:pokedex/ui/widget/favourite_button.dart';
 import 'package:pokedex/ui/widget/type_icon_widget.dart';
 import 'package:pokedex/utils/map_card_color.dart';
 
@@ -47,7 +47,9 @@ class _PokemonCardState extends State<PokemonCard> {
               ),
             ),
             const Spacer(),
-            _favouriteButton(),
+            FavouriteButton(
+              pokemon: widget.pokemon,
+            ),
           ],
         ),
       ),
@@ -90,17 +92,6 @@ class _PokemonCardState extends State<PokemonCard> {
             fontWeight: FontWeight.w500, color: Theme.of(context).hintColor),
       );
 
-  Widget _favouriteButton() => Padding(
-        padding: const EdgeInsets.only(left: 8.0),
-        child: IconButton(
-          onPressed: () {},
-          icon: Icon(
-            CupertinoIcons.star,
-            color: Colors.amber.shade700,
-          ),
-        ),
-      );
-
   Widget _pokemonName() => Text(
         widget.pokemon.name.capitalize(),
         style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -116,7 +107,7 @@ class _PokemonCardState extends State<PokemonCard> {
         ),
       );
 
-  _openDetailSheet() => showCupertinoModalBottomSheet(
+  void _openDetailSheet() => showCupertinoModalBottomSheet(
       context: context,
       builder: (context) => PokemonDetailsSheet(pokemon: widget.pokemon));
 }

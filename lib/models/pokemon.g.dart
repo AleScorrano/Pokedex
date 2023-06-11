@@ -19,9 +19,9 @@ abstract class _$PokemonCWProxy {
 
   Pokemon abilities(List<String> abilities);
 
-  Pokemon image(Uint8List? image);
+  Pokemon isFavourite(bool isFavourite);
 
-  Pokemon isFavourite(bool? isFavourite);
+  Pokemon image(Uint8List? image);
 
   Pokemon types(List<String> types);
 
@@ -40,8 +40,8 @@ abstract class _$PokemonCWProxy {
     int? weight,
     PokemonStats? stats,
     List<String>? abilities,
-    Uint8List? image,
     bool? isFavourite,
+    Uint8List? image,
     List<String>? types,
     String? ability,
   });
@@ -72,10 +72,10 @@ class _$PokemonCWProxyImpl implements _$PokemonCWProxy {
   Pokemon abilities(List<String> abilities) => this(abilities: abilities);
 
   @override
-  Pokemon image(Uint8List? image) => this(image: image);
+  Pokemon isFavourite(bool isFavourite) => this(isFavourite: isFavourite);
 
   @override
-  Pokemon isFavourite(bool? isFavourite) => this(isFavourite: isFavourite);
+  Pokemon image(Uint8List? image) => this(image: image);
 
   @override
   Pokemon types(List<String> types) => this(types: types);
@@ -98,8 +98,8 @@ class _$PokemonCWProxyImpl implements _$PokemonCWProxy {
     Object? weight = const $CopyWithPlaceholder(),
     Object? stats = const $CopyWithPlaceholder(),
     Object? abilities = const $CopyWithPlaceholder(),
-    Object? image = const $CopyWithPlaceholder(),
     Object? isFavourite = const $CopyWithPlaceholder(),
+    Object? image = const $CopyWithPlaceholder(),
     Object? types = const $CopyWithPlaceholder(),
     Object? ability = const $CopyWithPlaceholder(),
   }) {
@@ -128,14 +128,15 @@ class _$PokemonCWProxyImpl implements _$PokemonCWProxy {
           ? _value.abilities
           // ignore: cast_nullable_to_non_nullable
           : abilities as List<String>,
+      isFavourite:
+          isFavourite == const $CopyWithPlaceholder() || isFavourite == null
+              ? _value.isFavourite
+              // ignore: cast_nullable_to_non_nullable
+              : isFavourite as bool,
       image: image == const $CopyWithPlaceholder()
           ? _value.image
           // ignore: cast_nullable_to_non_nullable
           : image as Uint8List?,
-      isFavourite: isFavourite == const $CopyWithPlaceholder()
-          ? _value.isFavourite
-          // ignore: cast_nullable_to_non_nullable
-          : isFavourite as bool?,
       types: types == const $CopyWithPlaceholder() || types == null
           ? _value.types
           // ignore: cast_nullable_to_non_nullable
@@ -175,8 +176,8 @@ class PokemonAdapter extends TypeAdapter<Pokemon> {
       weight: fields[3] as int,
       stats: fields[4] as PokemonStats,
       abilities: (fields[5] as List).cast<String>(),
+      isFavourite: fields[8] as bool,
       image: fields[9] as Uint8List?,
-      isFavourite: fields[8] as bool?,
       types: (fields[6] as List).cast<String>(),
       ability: fields[10] as String?,
     );

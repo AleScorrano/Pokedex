@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokedex/extensions/capitalize.dart';
 import 'package:pokedex/extensions/pokemon_id_formatter.dart';
 import 'package:pokedex/models/pokemon.dart';
+import 'package:pokedex/ui/widget/favourite_button.dart';
 import 'package:pokedex/ui/widget/pokemon_type_widget.dart';
 import 'package:pokedex/ui/widget/stats_indicator.dart';
 import 'package:pokedex/utils/map_card_color.dart';
@@ -11,15 +11,16 @@ import 'package:pokedex/utils/map_type_icon.dart';
 class PokemonDetailsSheet extends StatefulWidget {
   final Pokemon pokemon;
 
-  PokemonDetailsSheet({Key? key, required this.pokemon}) : super(key: key);
+  const PokemonDetailsSheet({Key? key, required this.pokemon})
+      : super(key: key);
 
   @override
-  _PokemonDetailsSheetState createState() => _PokemonDetailsSheetState();
+  PokemonDetailsSheetState createState() => PokemonDetailsSheetState();
 }
 
-class _PokemonDetailsSheetState extends State<PokemonDetailsSheet>
+class PokemonDetailsSheetState extends State<PokemonDetailsSheet>
     with SingleTickerProviderStateMixin {
-  late Color _pokemonColor = setCardColor(widget.pokemon.types.first);
+  late final Color _pokemonColor = setCardColor(widget.pokemon.types.first);
   late ScrollController _scrollController;
   late AnimationController _animationController;
   late Animation<double> _topAnimation;
@@ -78,6 +79,7 @@ class _PokemonDetailsSheetState extends State<PokemonDetailsSheet>
                 _backGroundHeder(context),
                 _pokeBall(),
                 _pokemonImage(),
+                _favouriteButton(),
               ],
             ),
           ),
@@ -149,7 +151,6 @@ class _PokemonDetailsSheetState extends State<PokemonDetailsSheet>
           children: [
             _typeIcon(),
             _nameAndIndex(context),
-            _favouriteButton(),
           ],
         ),
       );
@@ -195,13 +196,9 @@ class _PokemonDetailsSheetState extends State<PokemonDetailsSheet>
   Widget _favouriteButton() => Positioned(
         top: 5,
         left: 10,
-        child: IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            CupertinoIcons.star,
-            size: 32,
-            color: Colors.black45,
-          ),
+        child: FavouriteButton(
+          pokemon: widget.pokemon,
+          color: Colors.black54,
         ),
       );
 
