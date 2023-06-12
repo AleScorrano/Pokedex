@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex/blocs/pokemon/bloc/pokemon_bloc.dart';
 import 'package:pokedex/models/pokemon.dart';
+import 'package:pokedex/ui/pages/favourites_page.dart';
 import 'package:pokedex/ui/widget/connection_banner.dart';
 import 'package:pokedex/ui/widget/error_widget.dart';
 import 'package:pokedex/ui/widget/loading_indicator.dart';
 import 'package:pokedex/ui/widget/pokemon_card.dart';
+import 'package:pokedex/ui/widget/search_field.dart';
 
 class HomePage extends StatefulWidget {
+  static const String route = "/home-page";
   const HomePage({super.key});
 
   @override
@@ -108,30 +111,31 @@ class _HomePageState extends State<HomePage> {
         },
       );
 
-  Widget _pokemonList(List<Pokemon> pokemons, PokemonState state) => pokemons
-          .isEmpty
-      ? const SliverToBoxAdapter(child: Center(child: Text("No Pokemons")))
-      : SliverList.separated(
-          itemCount: _isSearching ? pokemons.length : pokemons.length + 1,
-          itemBuilder: (context, index) {
-            if (index == pokemons.length && !_isSearching) {
-              return state is FetchingMoreDataState
-                  ? const LoadingIndicator()
-                  : const SizedBox();
-            } else if (index == 0 && !_isSearching) {
-              return state is RefreshingPokemonsState
-                  ? const LoadingIndicator(message: "Updating all pokemons...")
-                  : const SizedBox();
-            }
-            return PokemonCard(
-                pokemon: pokemons[!_isSearching ? index - 1 : index]);
-          },
-          separatorBuilder: (context, index) => index == 0
-              ? const SizedBox(
-                  height: 28,
-                )
-              : _divider(),
-        );
+  Widget _pokemonList(List<Pokemon> pokemons, PokemonState state) =>
+      pokemons.isEmpty
+          ? const SliverToBoxAdapter(child: Center(child: Text("No Pokemons")))
+          : SliverPadding(
+              padding: const EdgeInsets.only(top: 10),
+              sliver: SliverList.builder(
+                itemCount: _isSearching ? pokemons.length : pokemons.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == pokemons.length && !_isSearching) {
+                    return state is FetchingMoreDataState
+                        ? const LoadingIndicator()
+                        : const SizedBox();
+                  } else if (index == 0 && !_isSearching) {
+                    return state is RefreshingPokemonsState
+                        ? const LoadingIndicator(
+                            message: "Updating all pokemons...")
+                        : const SizedBox();
+                  }
+                  return PokemonCard(
+                    pokemon: pokemons[!_isSearching ? index - 1 : index],
+                    scope: Scope.list,
+                  );
+                },
+              ),
+            );
 
   Widget _appBar() => SliverAppBar(
         backgroundColor: Colors.transparent,
@@ -162,7 +166,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => Navigator.pushNamed(context, FavouritePage.route),
             icon: Icon(
               CupertinoIcons.star_fill,
               color: Colors.amber.shade700,
@@ -170,35 +174,8 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         bottom: PreferredSize(
-            preferredSize: const Size(double.maxFinite, 40),
-            child: _textField()),
-      );
-
-  Widget _divider() => Divider(
-        indent: 100,
-        endIndent: 10,
-        color: Colors.grey.shade300,
-      );
-
-  Widget _textField() => Container(
-        height: 40,
-        padding: const EdgeInsets.all(3),
-        margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade300.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            prefixIcon: const Icon(CupertinoIcons.search),
-            hintText: "Search for name or id...",
-            hintStyle: Theme.of(context)
-                .textTheme
-                .labelLarge!
-                .copyWith(color: Colors.grey.shade600),
-            border: InputBorder.none,
-          ),
+          preferredSize: const Size(double.maxFinite, 60),
+          child: SearchField(controller: _searchController),
         ),
       );
 

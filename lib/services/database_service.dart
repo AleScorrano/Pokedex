@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:pokedex/models/pokemon.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pokedex/models/pokemon_stats.dart';
@@ -24,4 +25,8 @@ class DatabaseService {
   Future<void> deleteAll() async => await _pokemonBox.clear();
 
   Future<void> closeDatabase() => Hive.close();
+
+  ValueListenable<Box<Pokemon>> favourites() {
+    return _pokemonBox.listenable();
+  }
 }

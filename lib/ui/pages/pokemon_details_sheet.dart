@@ -20,7 +20,6 @@ class PokemonDetailsSheet extends StatefulWidget {
 
 class PokemonDetailsSheetState extends State<PokemonDetailsSheet>
     with SingleTickerProviderStateMixin {
-  late final Color _pokemonColor = setCardColor(widget.pokemon.types.first);
   late ScrollController _scrollController;
   late AnimationController _animationController;
   late Animation<double> _topAnimation;
@@ -105,7 +104,7 @@ class PokemonDetailsSheetState extends State<PokemonDetailsSheet>
           "assets/images/pokeball.png",
           width: 200,
           height: 200,
-          color: _pokemonColor.withOpacity(0.5),
+          color: widget.pokemon.color.withOpacity(0.5),
         ),
       );
 
@@ -131,17 +130,17 @@ class PokemonDetailsSheetState extends State<PokemonDetailsSheet>
   Widget _backGroundHeder(BuildContext context) => Container(
         height: 240,
         decoration: BoxDecoration(
-          color: _pokemonColor,
+          color: widget.pokemon.color,
           gradient: LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
             colors: [
-              _pokemonColor,
-              _pokemonColor.withOpacity(0.9),
-              _pokemonColor.withOpacity(0.8),
-              _pokemonColor.withOpacity(0.6),
-              _pokemonColor.withOpacity(0.4),
-              _pokemonColor.withOpacity(0.2),
+              widget.pokemon.color,
+              widget.pokemon.color.withOpacity(0.9),
+              widget.pokemon.color.withOpacity(0.8),
+              widget.pokemon.color.withOpacity(0.6),
+              widget.pokemon.color.withOpacity(0.4),
+              widget.pokemon.color.withOpacity(0.2),
             ],
           ),
           borderRadius:
@@ -162,7 +161,7 @@ class PokemonDetailsSheetState extends State<PokemonDetailsSheet>
           style: TextStyle(
             fontSize: 180,
             fontFamily: "PokeGoTypes",
-            color: _pokemonColor.withOpacity(0.7),
+            color: setTypeColor(widget.pokemon.types.first).withOpacity(0.7),
           ),
         ),
       );
@@ -248,23 +247,23 @@ class PokemonDetailsSheetState extends State<PokemonDetailsSheet>
             StatsIndicator(
                 value: widget.pokemon.stats.hp,
                 label: "hp",
-                color: _pokemonColor),
+                color: widget.pokemon.color),
             StatsIndicator(
                 value: widget.pokemon.stats.attack,
                 label: "atk",
-                color: _pokemonColor),
+                color: widget.pokemon.color),
             StatsIndicator(
                 value: widget.pokemon.stats.defense,
                 label: "def",
-                color: _pokemonColor),
+                color: widget.pokemon.color),
             StatsIndicator(
                 value: widget.pokemon.stats.specialAttack,
                 label: "satk",
-                color: _pokemonColor),
+                color: widget.pokemon.color),
             StatsIndicator(
                 value: widget.pokemon.stats.specialDefense,
                 label: "sdef",
-                color: _pokemonColor),
+                color: widget.pokemon.color),
           ],
         ),
       );

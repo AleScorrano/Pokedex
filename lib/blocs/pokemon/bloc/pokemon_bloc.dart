@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 import 'package:pokedex/errors/connection_state_error.dart';
 import 'package:pokedex/exception/no_more_pokemon_exception.dart';
 import 'package:pokedex/models/pokemon.dart';
@@ -14,7 +16,9 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
   final PokemonRepository pokemonRepository;
   final Stream<ConnectivityResult> connectionStateStream =
       Connectivity().onConnectivityChanged;
+
   late StreamSubscription<ConnectivityResult> connectivitySubscription;
+
   ConnectivityResult? connectionState;
   List<Pokemon> pokemons = [];
   PokemonBloc({
@@ -117,6 +121,7 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
   void refreshData() => add(RefreshDataEvent());
   void toggleFavourite(Pokemon pokemon) =>
       add(ToggleFavoriteEvent(pokemon: pokemon));
-
+  ValueListenable<Box<Pokemon>> getFavourites() =>
+      pokemonRepository.getFavourites();
   void deleteAll() => pokemonRepository.cleanCache();
 }

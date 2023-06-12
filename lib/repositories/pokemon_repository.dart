@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 import 'package:pokedex/dto/pokemon_dto.dart';
 import 'package:pokedex/errors/connection_state_error.dart';
 import 'package:pokedex/errors/repository_error.dart';
@@ -72,6 +74,7 @@ class PokemonRepository {
 
   Future<List<Pokemon>> refreshData() async {
     List<Pokemon> refreshedList = [];
+
     try {
       List<Pokemon> initialList = databaseService.allPokemons();
       int startOffset = 0;
@@ -151,6 +154,8 @@ class PokemonRepository {
 
 //****************************************************************************
 //****************************************************************************
+
+  ValueListenable<Box<Pokemon>> getFavourites() => databaseService.favourites();
 
   Future<void> cleanCache() async => await databaseService.deleteAll();
 }

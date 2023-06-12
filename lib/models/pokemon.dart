@@ -1,9 +1,10 @@
 import 'dart:typed_data';
-
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pokedex/models/pokemon_stats.dart';
+import 'package:pokedex/utils/map_card_color.dart';
 
 part 'pokemon.g.dart';
 
@@ -32,8 +33,8 @@ class Pokemon extends Equatable {
   final Uint8List? image;
   @HiveField(10)
   final String? ability;
-
-  const Pokemon(
+  final Color color;
+  Pokemon(
       {required this.id,
       required this.name,
       required this.height,
@@ -45,7 +46,8 @@ class Pokemon extends Equatable {
       required this.types,
       required this.ability})
       : imageURL =
-            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png";
+            "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png",
+        color = setCardColor(types.first);
 
   @override
   List<Object?> get props => [
@@ -57,7 +59,9 @@ class Pokemon extends Equatable {
         abilities,
         types,
         isFavourite,
+        color,
       ];
+
   Pokemon toggleFavourite() {
     return copyWith(isFavourite: !isFavourite);
   }

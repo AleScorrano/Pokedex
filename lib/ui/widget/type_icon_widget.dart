@@ -24,7 +24,7 @@ class TypeIcon extends StatelessWidget {
         style: TextStyle(
           fontFamily: "PokeGoTypes",
           fontSize: size ?? 22,
-          color: setCardColor(type).withOpacity(opacity ?? 1),
+          color: setTypeColor(type).withOpacity(opacity ?? 1),
         ),
       ),
     );

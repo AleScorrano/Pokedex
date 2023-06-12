@@ -6,90 +6,143 @@ import 'package:pokedex/models/pokemon.dart';
 import 'package:pokedex/ui/pages/pokemon_details_sheet.dart';
 import 'package:pokedex/ui/widget/favourite_button.dart';
 import 'package:pokedex/ui/widget/type_icon_widget.dart';
-import 'package:pokedex/utils/map_card_color.dart';
+import 'package:pokedex/utils/map_type_icon.dart';
 
 class PokemonCard extends StatefulWidget {
   final Pokemon pokemon;
-  const PokemonCard({super.key, required this.pokemon});
+  final Scope? scope;
+  const PokemonCard({
+    super.key,
+    required this.pokemon,
+    required this.scope,
+  });
 
   @override
   State<PokemonCard> createState() => _PokemonCardState();
 }
 
 class _PokemonCardState extends State<PokemonCard> {
-  late Color _pokemonColor;
-
-  @override
-  void initState() {
-    _pokemonColor = setCardColor(widget.pokemon.types.first);
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => _openDetailSheet(),
-      child: Container(
+      child: widget.scope == Scope.list ? _forListScope() : _forGridScope(),
+    );
+  }
+
+  Widget _forListScope() => Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         margin: const EdgeInsets.all(4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
           children: [
-            _pokemonImage(),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, left: 14, bottom: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            _typeIcon(),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                gradient: _gradient(),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _pokemonName(),
-                  _pokemonID(),
-                  _types(),
+                  _favouritesButton(),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 8.0, left: 4, bottom: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _pokemonName(),
+                        _pokemonID(),
+                        _types(),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  _pokemonImage(),
                 ],
               ),
             ),
-            const Spacer(),
-            FavouriteButton(
-              pokemon: widget.pokemon,
-            ),
           ],
+        ),
+      );
+
+  Widget _forGridScope() => Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Stack(
+          children: [
+            _typeIcon(),
+            Container(
+              width: double.maxFinite,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                gradient: LinearGradient(
+                  begin: Alignment.bottomRight,
+                  end: Alignment.topLeft,
+                  colors: [
+                    widget.pokemon.color,
+                    widget.pokemon.color.withOpacity(0.9),
+                    widget.pokemon.color.withOpacity(0.8),
+                    widget.pokemon.color.withOpacity(0.6),
+                    widget.pokemon.color.withOpacity(0.1),
+                  ],
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _pokemonName(),
+                    _pokemonID(),
+                    _pokemonImage(size: 120),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: -5,
+              child: _favouritesButton(),
+            )
+          ],
+        ),
+      );
+
+  Widget _favouritesButton() => FavouriteButton(
+        color: Colors.black54,
+        pokemon: widget.pokemon,
+      );
+
+  Widget _typeIcon() {
+    String type = setTypeIcon(widget.pokemon.types.first);
+    return Positioned(
+      right: type == "K" ? 10 : -10,
+      top: widget.scope == Scope.list ? -20 : 60,
+      bottom: widget.scope == Scope.list ? -20 : 0,
+      child: Text(
+        type,
+        style: const TextStyle(
+          fontSize: 110,
+          fontFamily: "PokeGoTypes",
+          color: Colors.black87,
         ),
       ),
     );
   }
 
-  Widget _pokemonImage() => Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.centerRight,
-            end: Alignment.centerLeft,
-            colors: [
-              _pokemonColor.withOpacity(0.2),
-              Colors.transparent,
-            ],
-          ),
-        ),
-        child: Stack(
-          children: [
-            TypeIcon(
-              type: widget.pokemon.types.first,
-              size: 80,
-              opacity: 0.3,
-            ),
-            widget.pokemon.image != null
-                ? Image.memory(
-                    widget.pokemon.image!,
-                    width: 100,
-                    height: 100,
-                  )
-                : const SizedBox()
-          ],
-        ),
-      );
+  Widget _pokemonImage({double? size}) => widget.pokemon.image != null
+      ? Image.memory(
+          widget.pokemon.image!,
+          width: size ?? 100,
+          height: size ?? 100,
+        )
+      : const SizedBox();
 
   Widget _pokemonID() => Text(
         widget.pokemon.id.toString().pokemonIdFormatter(),
         style: Theme.of(context).textTheme.labelLarge!.copyWith(
-            fontWeight: FontWeight.w500, color: Theme.of(context).hintColor),
+            fontWeight: FontWeight.bold, color: Theme.of(context).hintColor),
       );
 
   Widget _pokemonName() => Text(
@@ -107,7 +160,27 @@ class _PokemonCardState extends State<PokemonCard> {
         ),
       );
 
+  LinearGradient _gradient() => LinearGradient(
+        begin: Alignment.centerRight,
+        end: Alignment.centerLeft,
+        colors: [
+          widget.pokemon.color,
+          widget.pokemon.color.withOpacity(0.9),
+          widget.pokemon.color.withOpacity(0.8),
+          widget.pokemon.color.withOpacity(0.6),
+          widget.pokemon.color.withOpacity(0.4),
+          widget.pokemon.color.withOpacity(0.2),
+          widget.pokemon.color.withOpacity(0.1),
+          Colors.transparent,
+        ],
+      );
+
   void _openDetailSheet() => showCupertinoModalBottomSheet(
       context: context,
       builder: (context) => PokemonDetailsSheet(pokemon: widget.pokemon));
+}
+
+enum Scope {
+  list,
+  grid,
 }
