@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:pokedex/cubits/dark_mode_cubit.dart';
 import 'package:pokedex/extensions/capitalize.dart';
 import 'package:pokedex/extensions/pokemon_id_formatter.dart';
 import 'package:pokedex/models/pokemon.dart';
@@ -22,11 +24,17 @@ class PokemonCard extends StatefulWidget {
 }
 
 class _PokemonCardState extends State<PokemonCard> {
+  bool isLightMode = false;
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => _openDetailSheet(),
-      child: widget.scope == Scope.list ? _forListScope() : _forGridScope(),
+    return BlocBuilder<DarkModeCubit, bool>(
+      builder: (context, mode) {
+        isLightMode = mode;
+        return InkWell(
+          onTap: () => _openDetailSheet(),
+          child: widget.scope == Scope.list ? _forListScope() : _forGridScope(),
+        );
+      },
     );
   }
 
@@ -110,7 +118,7 @@ class _PokemonCardState extends State<PokemonCard> {
       );
 
   Widget _favouritesButton() => FavouriteButton(
-        color: Colors.black54,
+        color: isLightMode ? Colors.white70 : Colors.black54,
         pokemon: widget.pokemon,
       );
 
@@ -122,10 +130,10 @@ class _PokemonCardState extends State<PokemonCard> {
       bottom: widget.scope == Scope.list ? -20 : 0,
       child: Text(
         type,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 110,
           fontFamily: "PokeGoTypes",
-          color: Colors.black87,
+          color: isLightMode ? Colors.white70 : Colors.black87,
         ),
       ),
     );
@@ -156,7 +164,9 @@ class _PokemonCardState extends State<PokemonCard> {
   Widget _types() => Row(
         children: List<Widget>.generate(
           widget.pokemon.types.length,
-          (index) => TypeIcon(type: widget.pokemon.types[index]),
+          (index) => TypeIcon(
+            type: widget.pokemon.types[index],
+          ),
         ),
       );
 
@@ -171,7 +181,7 @@ class _PokemonCardState extends State<PokemonCard> {
           widget.pokemon.color.withOpacity(0.4),
           widget.pokemon.color.withOpacity(0.2),
           widget.pokemon.color.withOpacity(0.1),
-          Colors.transparent,
+          isLightMode ? Colors.white12 : Colors.transparent,
         ],
       );
 

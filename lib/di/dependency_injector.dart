@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex/blocs/pokemon/bloc/pokemon_bloc.dart';
+import 'package:pokedex/cubits/dark_mode_cubit.dart';
 import 'package:pokedex/mappers/pokemon_mapper.dart';
 import 'package:pokedex/mappers/pokemon_stats_mapper.dart';
 import 'package:pokedex/repositories/pokemon_repository.dart';
@@ -29,6 +30,9 @@ class DependencyInjector extends StatelessWidget {
             create: (context) => PokemonBloc(
               pokemonRepository: context.read(),
             )..fetchInitialData(),
+          ),
+          BlocProvider(
+            create: (_) => DarkModeCubit(),
           ),
         ],
         child: child,

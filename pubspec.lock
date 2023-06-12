@@ -408,6 +408,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  hydrated_bloc:
+    dependency: "direct dev"
+    description:
+      name: hydrated_bloc
+      sha256: "0ea117b32259d9a79c2a2d33eef92e9dd676b88ec4f1ef94102c5889ca1673b6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.1"
   io:
     dependency: transitive
     description:

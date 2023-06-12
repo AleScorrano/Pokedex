@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokedex/cubits/dark_mode_cubit.dart';
 
 import 'package:pokedex/di/dependency_injector.dart';
 import 'package:pokedex/services/database_service.dart';
@@ -14,15 +16,16 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return DependencyInjector(
       databaseService: databaseService,
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
+      child: _themeSelector(
+        (context, mode) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          themeMode: mode,
+          theme: _lightTheme(),
+          darkTheme: _darkTheme(),
+          home: const HomePage(),
+          onGenerateRoute: (settings) => _routeBuilder(settings),
+          initialRoute: HomePage.route,
         ),
-        onGenerateRoute: (settings) => _routeBuilder(settings),
-        initialRoute: HomePage.route,
       ),
     );
   }
@@ -50,5 +53,26 @@ class App extends StatelessWidget {
             child: page,
           );
         },
+      );
+
+  Widget _themeSelector(
+          Widget Function(BuildContext context, ThemeMode mode) builder) =>
+      BlocBuilder<DarkModeCubit, bool>(
+        builder: (context, darkModeEnabled) => builder(
+          context,
+          darkModeEnabled ? ThemeMode.dark : ThemeMode.light,
+        ),
+      );
+
+  ThemeData _lightTheme() => ThemeData(
+        colorScheme: const ColorScheme.light(),
+        useMaterial3: true,
+        brightness: Brightness.light,
+      );
+
+  ThemeData _darkTheme() => ThemeData(
+        colorScheme: const ColorScheme.dark(),
+        useMaterial3: true,
+        brightness: Brightness.dark,
       );
 }

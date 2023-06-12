@@ -36,9 +36,9 @@ class _FavouriteButtonState extends State<FavouriteButton> {
               onPressed: _favouriteToggle,
               icon: Icon(
                 listeningiItem.isFavourite
-                    ? CupertinoIcons.star_fill
-                    : CupertinoIcons.star,
-                color: widget.color ?? Colors.amber.shade700,
+                    ? CupertinoIcons.heart_fill
+                    : CupertinoIcons.heart,
+                color: widget.color ?? Colors.red,
                 size: 30,
               ),
             ),

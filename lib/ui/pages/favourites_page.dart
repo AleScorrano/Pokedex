@@ -69,7 +69,7 @@ class _FavouritePageState extends State<FavouritePage> {
         ),
         flexibleSpace: ClipRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+            filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
             child: Container(
               color: Colors.transparent,
             ),

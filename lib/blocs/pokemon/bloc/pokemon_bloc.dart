@@ -123,5 +123,4 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
       add(ToggleFavoriteEvent(pokemon: pokemon));
   ValueListenable<Box<Pokemon>> getFavourites() =>
       pokemonRepository.getFavourites();
-  void deleteAll() => pokemonRepository.cleanCache();
 }

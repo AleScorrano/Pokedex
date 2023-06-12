@@ -19,6 +19,7 @@ class SearchField extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: TextField(
+        cursorColor: Theme.of(context).disabledColor,
         controller: controller,
         decoration: InputDecoration(
           prefixIcon: const Icon(CupertinoIcons.search),
@@ -26,7 +27,7 @@ class SearchField extends StatelessWidget {
           hintStyle: Theme.of(context)
               .textTheme
               .labelLarge!
-              .copyWith(color: Colors.grey.shade600),
+              .copyWith(color: Theme.of(context).hintColor),
           border: InputBorder.none,
         ),
       ),

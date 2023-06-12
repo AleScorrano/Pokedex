@@ -31,21 +31,19 @@ class StatsIndicator extends StatelessWidget {
           width: 44,
           child: Text(
             value.toString(),
-            style: const TextStyle(
-              color: Colors.black87,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
           ),
         ),
-        _indicator(),
+        _indicator(context),
       ],
     );
   }
 
-  Widget _indicator() => Expanded(
+  Widget _indicator(BuildContext context) => Expanded(
         child: LinearProgressIndicator(
-            backgroundColor: Colors.grey.shade200,
+            backgroundColor: Colors.grey.shade300,
             borderRadius: BorderRadiusDirectional.circular(16),
             minHeight: 14,
             value: value / 200,

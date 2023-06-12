@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex/blocs/pokemon/bloc/pokemon_bloc.dart';
+import 'package:pokedex/cubits/dark_mode_cubit.dart';
 import 'package:pokedex/models/pokemon.dart';
 import 'package:pokedex/ui/pages/favourites_page.dart';
 import 'package:pokedex/ui/widget/connection_banner.dart';
@@ -57,8 +58,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          onPressed: () => BlocProvider.of<PokemonBloc>(context).deleteAll()),
       body: _body(),
     );
   }
@@ -151,25 +150,34 @@ class _HomePageState extends State<HomePage> {
         ),
         flexibleSpace: ClipRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+            filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
             child: Container(
               color: Colors.transparent,
             ),
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              CupertinoIcons.moon_fill,
-              color: Colors.amber.shade700,
-            ),
+          BlocBuilder<DarkModeCubit, bool>(
+            builder: (context, isDarkMode) {
+              return IconButton(
+                onPressed: () =>
+                    BlocProvider.of<DarkModeCubit>(context).toggle(),
+                icon: Icon(
+                  isDarkMode
+                      ? CupertinoIcons.brightness_solid
+                      : CupertinoIcons.moon_fill,
+                  size: 30,
+                  color: Colors.amber.shade800,
+                ),
+              );
+            },
           ),
           IconButton(
             onPressed: () => Navigator.pushNamed(context, FavouritePage.route),
-            icon: Icon(
-              CupertinoIcons.star_fill,
-              color: Colors.amber.shade700,
+            icon: const Icon(
+              CupertinoIcons.heart_fill,
+              color: Colors.red,
+              size: 30,
             ),
           ),
         ],
