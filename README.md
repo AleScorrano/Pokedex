@@ -23,4 +23,4 @@ Questa è un'app Pokédex sviluppata in Flutter che consente agli utenti di visu
 5. Esegui l'applicazione con il comando `flutter run`.
 
 
-![Anteprima dell'app](./preview/home-light.png)
+![Anteprima dell'app](preview/home-light.png)
