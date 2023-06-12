@@ -31,6 +31,4 @@ Questa è un'app Pokédex sviluppata in Flutter che consente agli utenti di visu
 | ----------------------------------------------- | ------------------------------------------------- |
 | ![Preferiti - Tema scuro](https://github.com/AleScorrano/Pokedex/assets/108980940/fe8ec1a5-b6b0-4b86-b801-42eefd3fd4db) | ![Preferiti - Tema chiaro](https://github.com/AleScorrano/Pokedex/assets/108980940/e7156886-2494-49da-bb5b-e72870318ec8) |
 
-Queste immagini mostrano l'aspetto dell'app nella modalità scura e nella modalità chiara, sia nella schermata principale che nella schermata dei preferiti.
 
-Grazie per l'interesse nella mia app Pokédex Flutter! Spero che ti piaccia esplorare il mondo dei Pokémon attraverso questa app ben progettata e ricca di funzionalità. Se hai domande o feedback, non esitare a contattarmi.
