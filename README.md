@@ -27,8 +27,8 @@ Questa è un'app Pokédex sviluppata in Flutter che consente agli utenti di visu
 
 | Home - Tema scuro                        | Home - Tema chiaro                        |
 | ---------------------------------------- | ----------------------------------------- |
-| ![Home - Tema scuro](https://github.com/AleScorrano/Pokedex/assets/108980940/83380380-d2ef-4ee9-bb64-5b60ac856a98) | ![Home - Tema chiaro](https://github.com/AleScorrano/Pokedex/assets/108980940/69328b2d-bf2d-4610-9532-70e3e706a922) |
+| ![Home - Tema scuro](https://github.com/AleScorrano/Pokedex/assets/108980940/dc353228-7899-47e0-b42f-2e053bd9960f) | ![Home - Tema chiaro](https://github.com/AleScorrano/Pokedex/assets/108980940/b924a2c9-8d24-4831-8cde-5843a2f55deb) |
 
 | Preferiti - Tema scuro                           | Preferiti - Tema chiaro                            |
 | ----------------------------------------------- | ------------------------------------------------- |
-| ![Preferiti - Tema scuro](https://github.com/AleScorrano/Pokedex/assets/108980940/fe8ec1a5-b6b0-4b86-b801-42eefd3fd4db) | ![Preferiti - Tema chiaro](https://github.com/AleScorrano/Pokedex/assets/108980940/e7156886-2494-49da-bb5b-e72870318ec8) |
+| ![Preferiti - Tema scuro](https://github.com/AleScorrano/Pokedex/assets/108980940/1f85167a-fbe3-4247-841f-a2c6ca70ef93) | ![Preferiti - Tema chiaro](https://github.com/AleScorrano/Pokedex/assets/108980940/846c2190-c1b8-4bca-94ee-ed9bee48519c) | 
