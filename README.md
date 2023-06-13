@@ -8,6 +8,8 @@ Questa è un'app Pokédex sviluppata in Flutter che consente agli utenti di visu
 - Possibilità di aggiungere Pokémon ai preferiti per un accesso rapido.
 - Ricerca avanzata per nome o tipo di Pokémon.
 - Interfaccia utente reattiva con temi personalizzati per la modalità chiaro e scuro.
+- Paginazione infinite scroll
+- Sistema di cache permanente con possibilità di aggiornare i dati tramite pull to refresh.
 
 ## Tecnologie utilizzate
 
